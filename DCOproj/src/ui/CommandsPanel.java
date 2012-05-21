@@ -12,6 +12,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 
 public class CommandsPanel extends JPanel implements ActionListener {
     private JFrame     parent;
@@ -27,9 +28,13 @@ public class CommandsPanel extends JPanel implements ActionListener {
 
     protected CommandsPanel(JFrame parent) {
         this.parent = parent;
+        this.setBackground(Color.BLACK);
+        
         // Remove & Add tags
         JPanel addAndRemoveTagPanel = new JPanel();
+        addAndRemoveTagPanel.setBackground(Color.BLACK);
         JPanel buttons = new JPanel();
+        buttons.setBackground(Color.BLACK);
         this.addTagButton = new JButton("Add Tag");
         this.removeTagButton = new JButton("Remove Tag");
         addTagButton.addActionListener(this);
@@ -52,12 +57,19 @@ public class CommandsPanel extends JPanel implements ActionListener {
                 .getOuterWidth()
                 - gapx, height));
         addAndRemoveTagPanel
-                .setBorder(BorderFactory.createTitledBorder("Tags"));
+                .setBorder(BorderFactory.createTitledBorder(null,"Tags",
+                                                            TitledBorder.DEFAULT_JUSTIFICATION,
+                                                            TitledBorder.DEFAULT_POSITION,
+                                                            this.getFont(),
+                                                            Color.WHITE));
         // SlideShow
         JPanel slideShowPanel = new JPanel();
+        slideShowPanel.setBackground(Color.BLACK);
         startButton = new JButton("Start");
         startButton.addActionListener(this);
         stopButton = new JButton("Stop");
+        //stopButton.setBackground(Color.BLACK);
+        //stopButton.setForeground(Color.WHITE);
         stopButton.addActionListener(this);
         prevButton = new JButton("<");
         prevButton.addActionListener(this);
@@ -77,7 +89,11 @@ public class CommandsPanel extends JPanel implements ActionListener {
         slideShowPanel.setMaximumSize(new Dimension(ThumbnailsPanel
                 .getOuterWidth()
                 - gapx, height));
-        slideShowPanel.setBorder(BorderFactory.createTitledBorder("SlideShow"));
+        slideShowPanel.setBorder(BorderFactory.createTitledBorder(null,"SlideShow",
+                                                                  TitledBorder.DEFAULT_JUSTIFICATION,
+                                                                  TitledBorder.DEFAULT_POSITION,
+                                                                  this.getFont(),
+                                                                  Color.WHITE));
         this.add(addAndRemoveTagPanel);
         this.add(slideShowPanel);
         this.setPreferredSize(new Dimension(ThumbnailsPanel.getOuterWidth(),

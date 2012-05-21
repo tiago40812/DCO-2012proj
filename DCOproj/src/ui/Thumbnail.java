@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
@@ -49,16 +50,20 @@ public class Thumbnail extends JButton {
            return filename;
        }
        protected static ImageIcon getFullSizeImageIcon(String filename) {
+           // For now we do not keep full-size images in memory 
            if (fullSizeImages.containsKey(filename)) {
+               // Not used.
                System.out.println("in Thumbnail.getFullSizeImageIcon Image Icon : " + fullSizeImages.get(filename).getClass());
                return fullSizeImages.get(filename);
            } else 
                return new ImageIcon(filename);
        }
-       protected static Image getFullSizeImage(String filename) {
+       /*
+       private static Image getFullSizeImage(String filename) {
            return Thumbnail.getFullSizeImageIcon(filename).getImage();
        }
- 
+       */
+       
        private class Action implements ActionListener {
            @Override
            public void actionPerformed(ActionEvent e) {
@@ -72,12 +77,27 @@ public class Thumbnail extends JButton {
         * @param h - desired height
         * @return - the new resized image
         */
-       protected static Image getScaledImage(Image srcImg, int w, int h){
-           BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-           Graphics2D g2 = resizedImg.createGraphics();
-           g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-           g2.drawImage(srcImg, 0, 0, w, h, null);
-           g2.dispose();
-           return resizedImg;
+       protected static Image getScaledAndRotateImage(Image srcImg, int w, int h, double angle){
+           // System.out.printf("w: %s h: %s angle %s w/h %s\n", w , h , angle, w*1.0 / h );           
+           if (angle != 0.0) {
+               BufferedImage resizedImg = new BufferedImage(h, w, BufferedImage.TYPE_INT_RGB);
+               Graphics2D g2 = resizedImg.createGraphics();
+               g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+               g2.rotate(angle);  // Rotate.
+               g2.translate(0, -h);
+               // g2.drawImage(srcImg,(int) -Math.round(w/2.0) , (int) -Math.round(h/2.0) , w, h, null);
+               g2.drawImage(srcImg,0 , 0 , w, h, null);
+               // g2.drawImage(srcImg, at, null);
+               g2.dispose();
+               return resizedImg;
+           } else {
+               BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+               Graphics2D g2 = resizedImg.createGraphics();
+               g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+               g2.drawImage(srcImg,0 , 0 , w, h, null);
+               g2.dispose();
+               return resizedImg;
+           }
+           
        }
 }

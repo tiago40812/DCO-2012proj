@@ -3,7 +3,6 @@ package ui;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -14,25 +13,17 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
 import domain.TagStatus;
 
 public class MainFrame extends JFrame implements ActionListener, Observer {
-    private String             librariesDir;
-    // UI elmenents (panels).
+    // private File librariesDir;
+    // UI elements (panels).
     private ThumbnailsPanel    thumbnailsPanel;
     private FullSizePanel      fullSizePanel;
     private TagCloudPanel      tagCloudPanel;
@@ -49,23 +40,22 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
     private JMenuItem          addToCollectionItem;
     private JMenuItem          addPictureItem;
     private JMenuItem          loadCollectionItem;
+    private JMenuItem          saveCollectionAsItem;
     private JMenuItem          saveCollectionItem;
-    private JMenuItem          saveAsCollectionItem;
+    private JMenuItem          saveAlbumItem;
+    private JMenuItem          loadAlbumItem;
 
     private int                frameWidth  = 1000;
     private int                frameHeight = 660;
 
     /**
      * The MainFrame class is responsible for the creation and the communication
-     * between the UI and the domain. The argument is a string that indicates the
-     * default directory for loading and saving collections. If null the home
-     * directory is used.
+     * between the UI and the domain. The argument is a string that indicates
+     * the default directory for loading and saving collections. If null the
+     * home directory is used.
      * 
-     * @param librariesDir
      */
-    public MainFrame(String librariesDir) {
-        this.librariesDir = (librariesDir == null) ? System
-                .getProperty("user.home") : librariesDir;
+    public MainFrame() {
         Main.lib.addObserver(this);
     }
 
@@ -83,20 +73,33 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
         addToCollectionItem = new JMenuItem("Add pictures...", 'A');
         fileMenu.add(addToCollectionItem);
         addToCollectionItem.addActionListener(this);
+
         addPictureItem = new JMenuItem("Add picture...");
         fileMenu.add(addPictureItem);
         addPictureItem.addActionListener(this);
-        loadCollectionItem = new JMenuItem("Load collection...");
-        fileMenu.add(loadCollectionItem);
-        loadCollectionItem.addActionListener(this);
 
-        saveAsCollectionItem = new JMenuItem("Save collection as...");
-        fileMenu.add(saveAsCollectionItem);
-        saveAsCollectionItem.addActionListener(this);
         saveCollectionItem = new JMenuItem("Save collection");
         fileMenu.add(saveCollectionItem);
         saveCollectionItem.addActionListener(this);
-        //
+
+        fileMenu.addSeparator();
+        saveAlbumItem = new JMenuItem("Save album...");
+        fileMenu.add(saveAlbumItem);
+        saveAlbumItem.addActionListener(this);
+
+        loadAlbumItem = new JMenuItem("Load album...");
+        fileMenu.add(loadAlbumItem);
+        loadAlbumItem.addActionListener(this);
+
+        fileMenu.addSeparator();
+        saveCollectionAsItem = new JMenuItem("Export collection...");
+        fileMenu.add(saveCollectionAsItem);
+        saveCollectionAsItem.addActionListener(this);
+
+        loadCollectionItem = new JMenuItem("Import collection...");
+        fileMenu.add(loadCollectionItem);
+        loadCollectionItem.addActionListener(this);
+
         fileMenu.addSeparator();
         JMenuItem quitItem = new JMenuItem("Quit", 'Q');
         fileMenu.add(quitItem);
@@ -201,7 +204,7 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
     }
 
     // Methods for UI setup.-------------------------------------
-    
+
     protected int getLeftColumnWidth() {
         return ThumbnailsPanel.getOuterWidth();
     }
@@ -229,6 +232,7 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
     protected int getInfoLineWidth() {
         return this.getFrameWidth();
     }
+
     // Methods for UI setup.--(end)------------------------------
 
     /**
@@ -251,24 +255,23 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
     }
 
     public void actionPerformed(ActionEvent e) {
-        // Handle open button action.
+        File userDir = new File(System.getProperty("user.home"));
         if (e.getSource() == addToCollectionItem) {
+            // ----- Add a set of pictures to the collection.
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fc.setCurrentDirectory(new File(librariesDir));
+            fc.setCurrentDirectory(userDir);
             int returnVal = fc.showOpenDialog(this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 File[] files = file.listFiles(new PictureFilter());
-
                 Main.lib.addPicturesToCollection(files);
-
             } else {
                 System.err.println("Open command cancelled by user.");
             }
-            // Handle save button action.
         } else if (e.getSource() == addPictureItem) {
+            // ----- Add a single picture to the collection.
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fc.setCurrentDirectory(new File(librariesDir));
+            fc.setCurrentDirectory(userDir);
             int returnVal = fc.showOpenDialog(this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
@@ -282,8 +285,9 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
             } else {
                 System.err.println("Open command cancelled by user.");
             }
-        } else if (e.getSource() == saveAsCollectionItem) {
-            fc.setCurrentDirectory(new File("/home/tl/code/java/ImageTagger/"));
+        } else if (e.getSource() == saveAlbumItem) {
+            // ----- Save an album (current selection).
+            fc.setCurrentDirectory(userDir);
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int returnVal = fc.showSaveDialog(this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -291,7 +295,7 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
                 // This is where a real application would save the file.
                 System.err.println("Saving: " + file.getName() + ".");
                 try {
-                    Main.lib.saveCollectionAs(file);
+                    Main.lib.saveAlbum(file);
                 } catch (IOException ex) {
                     // TODO: add user notification.
                     ex.printStackTrace();
@@ -299,31 +303,65 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
             } else {
                 System.err.println("Save command cancelled by user.");
             }
-        } else if (e.getSource() == loadCollectionItem) {
-            fc.setCurrentDirectory(new File("/home/tl/code/java/ImageTagger/"));
+        } else if (e.getSource() == loadAlbumItem) {
+            // ----- Loads a previously saved album.
+            fc.setCurrentDirectory(userDir);
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int returnVal = fc.showOpenDialog(this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 System.err.println("Loading: " + file.getName() + ".");
-                Main.lib.loadFrom(file);
+                Main.lib.loadAlbum(file);
             }
         } else if (e.getSource() == saveCollectionItem) {
             try {
-                Main.lib.savePictureCollection();
+                Main.lib.saveCollection();
             } catch (IOException ex) {
                 // TODO: add user notification.
                 ex.printStackTrace();
             }
+        } else if (e.getSource() == saveCollectionAsItem) {
+            // ----- Save an collection in a file.
+            fc.setCurrentDirectory(userDir);
+            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int returnVal = fc.showSaveDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                // This is where a real application would save the file.
+                System.err.println("Saving: " + file.getName() + ".");
+                try {
+                    Main.lib.exportCollection(file);
+                } catch (IOException ex) {
+                    // TODO: add user notification.
+                    ex.printStackTrace();
+                }
+            } else {
+                System.err.println("Save command cancelled by user.");
+            }
+        } else if (e.getSource() == loadAlbumItem) {
+            // ----- Loads a previously saved album.
+            fc.setCurrentDirectory(userDir);
+            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int returnVal = fc.showOpenDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                System.err.println("Loading: " + file.getName() + ".");
+                Main.lib.importCollection(file);
+            }
         }
     }
+
     private static boolean isPictureFile(File file) {
         String filename = file.getName();
         int i = filename.lastIndexOf('.');
-        // System.out.println("in isPicturefile " + ((i>=1) ? filename.substring(i) : i));
-        return (i >= 1 && (filename.substring(i).equals(".jpeg") || filename.substring(i).equals(".jpg") || filename.substring(i).equals(".JPG") ||
-                       filename.substring(i).equals(".JPEG")));
+        // System.out.println("in isPicturefile " + ((i>=1) ?
+        // filename.substring(i) : i));
+        return (i >= 1 && (filename.substring(i).equals(".jpeg")
+                || filename.substring(i).equals(".jpg")
+                || filename.substring(i).equals(".JPG") 
+                || filename.substring(i).equals(".JPEG")));
     }
+
     private static void quitApplication() {
         System.exit(0);
     }
@@ -379,5 +417,17 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
 
     protected void stopSlideShow() {
         Main.lib.stopSlideShow();
+    }
+
+    protected int getPictureWidth() {
+        return Main.lib.getPictureWidth();
+    }
+
+    protected int getPictureHeight() {
+        return Main.lib.getPictureHeight();
+    }
+
+    protected String getPictureOrientation() {
+        return Main.lib.getPictureOrientation();
     }
 }

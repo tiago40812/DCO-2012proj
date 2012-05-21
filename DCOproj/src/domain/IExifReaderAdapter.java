@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IExifReaderAdapter {
-/*teste
+
     /**
      * This method is responsible for extracting and returning a set of relevant tags
      * from the EXIF data. The set of tags that should be returned include (but

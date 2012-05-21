@@ -1,10 +1,18 @@
 package domain;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Scanner;
 
 /**
  * The Library class is the main class in the domain package. It is responsible
@@ -14,7 +22,7 @@ import java.util.Observable;
  * current picture. Specific information regarding this picture may be obtained
  * and tags may be assigned or removed from it.
  * 
- * @author 
+ * @author tl
  * 
  */
 public class Library extends Observable {
@@ -25,9 +33,9 @@ public class Library extends Observable {
      * @param filename
      */
     public Library(File filename) {
+
     }
 
-    
     /**
      * Add pictures to the current collection. The new pictures are also added
      * to the current selection.
@@ -41,7 +49,6 @@ public class Library extends Observable {
     public void addPicturesToCollection(File[] filenames) {
         
     }
-
 
     /**
      * Adds a tag to the current picture.
@@ -60,7 +67,7 @@ public class Library extends Observable {
      * 
      * @param tag
      * @requires
-     * @ensures tag is not part of current picture's tags.
+     * @ensures if tag is not an EXIF tag, tag is not part of current picture's tags.
      * 
      */
     public void removeTagFromPicture(String tag) {
@@ -71,6 +78,7 @@ public class Library extends Observable {
      * @return current picture's width.
      */
     public int getPictureWidth() {
+        
         return 1;
     }
 
@@ -81,8 +89,14 @@ public class Library extends Observable {
         return 1;
     }
 
+    /**
+     * Returns the orientation of the current picture as defined in the EXIF metadata.
+     * @return current picture's orientation
+     */
+    public String getPictureOrientation() {
+        return "";
+    }
     public List<String> getPictureTags(String filename) {
-        // This method is not used by the graphical UI, it is used in the terminal interface.
         return null;
     }
 
@@ -98,22 +112,10 @@ public class Library extends Observable {
      * 
      * @throws IOException
      */
-    public void savePictureCollection() throws IOException {
-        // the exception may be catched in the method.
+    public void saveCollection() throws IOException {
+        
     }
-
-    /**
-     * Saves the current collection to the specified file.
-     * 
-     * @param file
-     * @throws IOException
-     * @requires
-     * @ensures file contains the description of the collection.
-     */
-    public void saveCollectionAs(File file) throws IOException {
-     // the exception may be catched in the method.
-    }
-
+    
     /**
      * Loads the contents of the collection.
      * 
@@ -125,7 +127,16 @@ public class Library extends Observable {
     public void loadCollection() {
         
     }
-
+    /**
+     * Saves the collection in a file.
+     * @param filename
+     * @throws IOException
+     * @requires 
+     * @ensures the current collection's name is filename.
+     */
+    public void exportCollection(File filename) throws IOException {
+        
+    }
     /**
      * Initializes the current collection with the contents of file.
      * 
@@ -134,11 +145,33 @@ public class Library extends Observable {
      * @ensures the current collection's filename is file. The contents of the
      *          collection corresponds to the contents of the file.
      */
-    public void loadFrom(File file) {
+    public void importCollection(File file) {
         
     }
 
+    /**
+     * Saves the current selection in a file. If no subset of pictures was selected, saves the whole collection.
+     * @param destination
+     * @throws IOException
+     */
+    public void saveAlbum(File destination) throws IOException {
+            
+    }
     
+    /**
+     * Loads an album from a file. 
+     * @param album
+     * @requires The album file contains a description of a set of pictures as saved using saveAlbum(File destination).
+     * @ensures  The set of pictures contained in the album becomes the current the selection.
+     */
+    public void loadAlbum(File album) {
+        
+    }
+    
+    private void actualizeCurrentSelection() {
+        
+    }
+
     /**
      * Method called when the user selects a tag in the cloud.
      * 
@@ -186,7 +219,6 @@ public class Library extends Observable {
      * 
      */
     public Map<String, Double> getTagsInSelection() {
-        
         return null;
     }
 
@@ -212,6 +244,7 @@ public class Library extends Observable {
      * Replaces the current selection of tags by the previous selection of tags.
      */
     public void recoverLastTagSelection() {
+        
     }
 
     /**
@@ -259,6 +292,7 @@ public class Library extends Observable {
      * with the first picture in the selection.
      */
     public void nextPicture() {
+        
     }
 
     /**
@@ -268,30 +302,39 @@ public class Library extends Observable {
      * 
      */
     public void previousPicture() {
+        
     }
 
     /**
      * Sets the current picture to the picture indicated by the parameter.
+     * 
      * @param picture
-     * @requires picture must be a filename of a picture and be part of the current selection.
+     * @requires picture must be a filename of a picture and be part of the
+     *           current selection.
      * @ensures getCurrentPicture().equals(picture)
      */
     public void setCurrentPicture(String picture) {
+        
     }
 
     /**
-     * Starts the slide show. If a slide show is already running the call has no effect.
-     * @requires 
+     * Starts the slide show. If a slide show is already running the call has no
+     * effect.
+     * 
+     * @requires
      * @ensures a slide show is running.
      */
     public void startSlideShow() {
+        
     }
 
     /**
      * Stops the slide show.
+     * 
      * @requires
      * @ensures the slide show stops.
      */
     public void stopSlideShow() {
+        
     }
 }

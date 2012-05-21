@@ -19,11 +19,17 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        
+        File imagetaggerDir = new File(System.getProperty("user.home")
+                + "/.imagetagger/");
+        imagetaggerDir.mkdir();
+        File thumbnailsDir = new File(System.getProperty("user.home")
+                + "/.imagetagger/thumbnails/");
+        thumbnailsDir.mkdir();
         try {
             // Set System L&F
             // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager
+                    .getCrossPlatformLookAndFeelClassName());
         } catch (UnsupportedLookAndFeelException e) {
             System.err.println(e);
         } catch (ClassNotFoundException e) {
@@ -33,16 +39,24 @@ public class Main {
         } catch (IllegalAccessException e) {
             System.err.println(e);// handle exception
         }
-        // TODO: read the configuration (initial collection, default collection directory etc...) form a local file.
+
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                lib = new Library(new File("collection.dat"));
-                MainFrame myMainFrame = new MainFrame(null);
+                File thumbnailsDir = new File("thumbnails");
+                thumbnailsDir.mkdir();
+                // Na versão para o projecto os ficheiros são guardados na pasta do projecto.
+                // File theCollectionDir = 
+                        // new File(System
+                        // .getProperty("user.home") + "/.imagetagger/");
+                // theCollectionDir.mkdirs();
+                lib = new Library(/* new File(theCollectionDir.getName() + "collection.dat" */ 
+                                  new File("collection.dat"));
+                MainFrame myMainFrame = new MainFrame();
                 lib.loadCollection();
                 myMainFrame.initialize();
                 myMainFrame.setVisible(true);
             }
         });
     }
-    
+
 }

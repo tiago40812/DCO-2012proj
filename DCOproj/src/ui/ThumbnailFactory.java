@@ -12,45 +12,56 @@ import javax.swing.ImageIcon;
 
 public class ThumbnailFactory extends MemoFile {
 
-    protected static ThumbnailFactory factory = new ThumbnailFactory();
-    private File fullSizeFile;
-    private int defaultThumbnailWidth = 80;
-    private int defaultThumbnailHeight = 80;
-    
-    private ThumbnailFactory() {};
-    
+    protected static ThumbnailFactory factory                = new ThumbnailFactory();
+    private File                      fullSizeFile;
+    private int                       defaultThumbnailWidth  = 80;
+    private int                       defaultThumbnailHeight = 80;
+
+    private ThumbnailFactory() {
+    };
+
     public ThumbnailFactory makeThumbnailFactory() {
         return factory;
     }
-    
-    protected Thumbnail makeThumbnail(ThumbnailsPanel parent, String fullSizeFilename) {
-        System.out.println("in ThumbnailFactory.makeThumbnail image : " + fullSizeFilename);
+
+    protected Thumbnail makeThumbnail(ThumbnailsPanel parent,
+            String fullSizeFilename) {
+        System.out.println("in ThumbnailFactory.makeThumbnail image : "
+                + fullSizeFilename);
         fullSizeFile = new File(fullSizeFilename);
-        Thumbnail newThumbnail = new Thumbnail(parent, fullSizeFilename, 
-                                               (ImageIcon) factory.getResult());
-        newThumbnail.setMaximumSize(new Dimension(getThumbnailWidth(),getThumbnailWidth()));
-        newThumbnail.setMinimumSize(new Dimension(getThumbnailWidth(),getThumbnailWidth()));
-        newThumbnail.setPreferredSize(new Dimension(getThumbnailWidth(),getThumbnailWidth()));
+        Thumbnail newThumbnail = new Thumbnail(parent, fullSizeFilename,
+                (ImageIcon) factory.getResult());
+        newThumbnail.setMaximumSize(new Dimension(getThumbnailWidth(),
+                getThumbnailWidth()));
+        newThumbnail.setMinimumSize(new Dimension(getThumbnailWidth(),
+                getThumbnailWidth()));
+        newThumbnail.setPreferredSize(new Dimension(getThumbnailWidth(),
+                getThumbnailWidth()));
         return newThumbnail;
     }
-   
+
     protected int getThumbnailWidth() {
         return defaultThumbnailWidth;
     }
 
-  
     protected int getThumbnailHeight() {
         return defaultThumbnailHeight;
     }
 
     @Override
     protected File getResultFile() {
-        // String tempdir = "/home/tl/fcul/DCO/2011-2012/Pictures/thumbnails/"; 
-        String tempdir = System.getProperty("java.io.tmpdir");
-        if (!(tempdir.endsWith("/") || tempdir.endsWith("\\")))
-            tempdir = tempdir + System.getProperty("file.separator");
+        // Na versão para o projecto convem que os thumnails de cada projecto
+        // sejam guardados na pasta local ao projecto.
+        /*
+         * String tempdir = System.getProperty("user.home") +
+         * "/.imagetagger/thumbnails/"; if (!(tempdir.endsWith("/") ||
+         * tempdir.endsWith("\\"))) tempdir = tempdir +
+         * System.getProperty("file.separator");
+         */
+        String tempdir = "thumbnails/";
         tempdir += fullSizeFile.getAbsolutePath()
-                .replace(System.getProperty("file.separator"), "!").substring(1);
+                .replace(System.getProperty("file.separator"), "!")
+                .substring(1);
         return new File(tempdir);
     }
 
@@ -69,10 +80,9 @@ public class ThumbnailFactory extends MemoFile {
             System.err.println("Could not read image " + fullSizeFile);
             e.printStackTrace();
         }
-        Image newThumbnail = full
-                .getScaledInstance(getThumbnailWidth() - 4,
-                                   getThumbnailHeight() - 4,
-                                   Image.SCALE_SMOOTH);
+        Image newThumbnail = full.getScaledInstance(getThumbnailWidth() - 4,
+                                                    getThumbnailHeight() - 4,
+                                                    Image.SCALE_SMOOTH);
         ImageIcon newThumbnailIcon = new ImageIcon(newThumbnail);
         System.out.println("in ThumbnailFactory.executeOperation done.");
         return newThumbnailIcon;
@@ -81,15 +91,15 @@ public class ThumbnailFactory extends MemoFile {
     @Override
     protected void writeResult(File file, Object result) {
         try {
-            ImageIO.write(getBufferedImageFromImage(((ImageIcon) result).getImage()), "jpeg",
-                          file);
+            ImageIO.write(getBufferedImageFromImage(((ImageIcon) result)
+                    .getImage()), "jpeg", file);
         } catch (IOException e) {
-          System.err.println("Could write image " + file);
-          e.printStackTrace();
+            System.err.println("Could write image " + file);
+            e.printStackTrace();
         }
-        
+
     }
-    
+
     private BufferedImage getBufferedImageFromImage(Image img) {
         // This line is important, this makes sure that the image is
         // loaded fully
