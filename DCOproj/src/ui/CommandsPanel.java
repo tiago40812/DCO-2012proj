@@ -113,6 +113,7 @@ public class CommandsPanel extends JPanel implements ActionListener {
         } else if (e.getSource() == removeTagButton) {
             System.out.println("Remove tag button pressed."
                     + tagInput.getText());
+            ((MainFrame) this.parent).removeTag(tagInput.getText());
         } else if (e.getSource() == nextButton) {
             System.out.println("Next button pressed.");
             ((MainFrame) parent).nextPicture();

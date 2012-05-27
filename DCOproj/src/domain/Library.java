@@ -219,7 +219,7 @@ public class Library extends Observable {
      * 
      */
     public Map<String, Double> getTagsInSelection() {
-        return null;
+        return new HashMap<String, Double>();
     }
 
     /**
@@ -229,7 +229,7 @@ public class Library extends Observable {
      * @return list of pictures
      */
     public List<String> getSelectedPictures() {
-        return null;
+        return new ArrayList<String>();
     }
 
     /**

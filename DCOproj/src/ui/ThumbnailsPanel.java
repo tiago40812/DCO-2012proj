@@ -59,7 +59,8 @@ public class ThumbnailsPanel extends JPanel {
         innerPanel.validate();
         // thumbnailClicked(Thumbnail.getThumbnail(this, pictureFilenames.get(0)));
         System.out.println("Thumbnails added.");
-        ((MainFrame) parent).thumbnailClicked(list.get(0));
+        if (list.size() > 0) 
+            ((MainFrame) parent).thumbnailClicked(list.get(0));
     }
     protected static int getOuterWidth() {
         return Thumbnail.thumbSize * 3 + 8 * gap;
