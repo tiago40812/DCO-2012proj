@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import ui.MainFrame;
+import ui.MemoFile;
 
 /**
  * The Library class is the main class in the domain package. It is responsible
@@ -25,27 +26,28 @@ import ui.MainFrame;
  */
 public class Library extends Observable {
 
-   ArrayList<String> pictures = new ArrayList<String>();
-   
-    
+    public ArrayList<String> collection = new ArrayList<String>();
+    public String currentPicture;
+    private String nextPicture;
+    private String previousPicture;
     /**
      * Creates a picture library from the the contents of filename.
      *
      * @param filename
      */
     public Library(File filename) {
-        
+
         //pictures = filename.listFiles();
-try {
-       Scanner sc = new Scanner(filename);
+        try {
+            Scanner sc = new Scanner(filename);
 
-        while (sc.hasNext()) {
-            pictures.add(sc.next());
+            while (sc.hasNext()) {
+                String s = sc.next();
+                collection.add(s);
+            }
+
+        } catch (FileNotFoundException e) {
         }
-
-     } catch (FileNotFoundException e){
-
-     }   
     }
 
     /**
@@ -58,6 +60,11 @@ try {
      *
      */
     public void addPicturesToCollection(File[] filenames) {
+        for (int i = 0; i < filenames.length; i++) {
+            collection.add(filenames[i].toString());
+        }
+        this.setChanged();
+        this.notifyObservers("addPictures");
     }
 
     /**
@@ -101,7 +108,7 @@ try {
      * @return current picture's orientation
      */
     public String getPictureOrientation() {
-        return "";
+          return "( 90 CW)";
     }
 
     public List<String> getPictureTags(String filename) {
@@ -142,11 +149,15 @@ try {
      * filename.
      */
     public void exportCollection(File filename) throws IOException {
-        FileWriter fw = new FileWriter(filename);  
-        for(int i=0;i<this.getSelectedPictures().size();i++)
+        FileWriter fw = new FileWriter(filename);
+        for (int i = 0; i < this.getSelectedPictures().size(); i++) {
             fw.write(this.getSelectedPictures().get(i).toString() + "\n");
+        }
         fw.flush();
         fw.close();
+
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -156,7 +167,7 @@ try {
      * current collection's filename is file. The contents of the collection
      * corresponds to the contents of the file.
      */
-    public void importCollection(File file) throws FileNotFoundException {        
+    public void importCollection(File file) {
     }
 
     /**
@@ -238,19 +249,7 @@ try {
      * @return list of pictures
      */
     public List<String> getSelectedPictures() {
-//        String[] strPictures = new String[pictures.length];     
-        
-//        for(int i=0; i < pictures.length;i++)
-//                    System.out.println(pictures[i] + "\nasas");
-//        
-//                for(int i=0; i < pictures.length;i++){
-                    //strPictures[i] = pictures[i].toString();
-//                    list.add(pictures[i].toString());
-//                }
-                
-       // ArrayList<String> list = (ArrayList<String>) Arrays.asList(strPictures);
-        //return new ArrayList<String>();
-        return pictures;
+        return collection;
     }
 
     /**
@@ -303,7 +302,7 @@ try {
      * @return
      */
     public String getCurrentPictureFilename() {
-        return null;
+        return currentPicture;
     }
 
     /**
@@ -312,7 +311,10 @@ try {
      * with the first picture in the selection.
      */
     public void nextPicture() {
-        
+        changePicture(true);
+        setCurrentPicture(nextPicture);
+        this.setChanged();
+        this.notifyObservers("nextPicture");
     }
 
     /**
@@ -322,6 +324,10 @@ try {
      *
      */
     public void previousPicture() {
+        changePicture(false);
+        setCurrentPicture(previousPicture);
+        this.setChanged();
+        this.notifyObservers("nextPicture");
     }
 
     /**
@@ -332,6 +338,9 @@ try {
      * getCurrentPicture().equals(picture)
      */
     public void setCurrentPicture(String picture) {
+        currentPicture = picture;
+        this.setChanged();
+        this.notifyObservers("setPicture");
     }
 
     /**
@@ -341,6 +350,7 @@ try {
      * @requires @ensures a slide show is running.
      */
     public void startSlideShow() {
+
     }
 
     /**
@@ -349,6 +359,24 @@ try {
      * @requires @ensures the slide show stops.
      */
     public void stopSlideShow() {
-        
+    }
+    
+    private void changePicture(boolean flag)
+    {
+        try{
+        for(int i=0; i<collection.size();i++)
+            if(collection.get(i).equals(currentPicture))
+                if(flag)
+                nextPicture = collection.get(i+1);
+                else 
+                    previousPicture = collection.get(i-1);
+        }
+        catch(Exception e)
+        {
+        if(flag)
+            nextPicture = collection.get(0);
+        else
+            previousPicture = collection.get(collection.size()-1);
+        }
     }
 }
