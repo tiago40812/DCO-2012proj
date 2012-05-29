@@ -394,7 +394,11 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
     protected void addTag(String tag) {
         Main.lib.addTagToPicture(tag);
     }
-
+    
+    protected void removeTag(String tag) {
+        Main.lib.removeTagFromPicture(tag);
+    }
+    
     protected void recoverLastTagSelection() {
         Main.lib.recoverLastTagSelection();
     }
