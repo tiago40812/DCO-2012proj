@@ -1,5 +1,7 @@
 package domain;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +10,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import ui.MainFrame;
 
 /**
  * The Library class is the main class in the domain package. It is responsible
@@ -22,8 +25,9 @@ import java.util.*;
  */
 public class Library extends Observable {
 
-    public ArrayList<String> pictures = new ArrayList<String>();
-
+   ArrayList<String> pictures = new ArrayList<String>();
+   
+    
     /**
      * Creates a picture library from the the contents of filename.
      *
@@ -36,8 +40,7 @@ try {
        Scanner sc = new Scanner(filename);
 
         while (sc.hasNext()) {
-            String file = sc.next();
-            pictures.add(file);
+            pictures.add(sc.next());
         }
 
      } catch (FileNotFoundException e){
@@ -128,9 +131,7 @@ try {
      * collection described in filename.
      */
     public void loadCollection() {
-        for (int i = 0; i < pictures.size(); i++) {
-//            System.out.println(pictures.get(i));
-        }
+        
     }
 
     /**
@@ -141,6 +142,11 @@ try {
      * filename.
      */
     public void exportCollection(File filename) throws IOException {
+        FileWriter fw = new FileWriter(filename);  
+        for(int i=0;i<this.getSelectedPictures().size();i++)
+            fw.write(this.getSelectedPictures().get(i).toString() + "\n");
+        fw.flush();
+        fw.close();
     }
 
     /**
@@ -150,7 +156,9 @@ try {
      * current collection's filename is file. The contents of the collection
      * corresponds to the contents of the file.
      */
-    public void importCollection(File file) {
+    public void importCollection(File file) throws FileNotFoundException {
+        FileReader fr = new FileReader(file);
+        
     }
 
     /**
@@ -232,10 +240,7 @@ try {
      * @return list of pictures
      */
     public List<String> getSelectedPictures() {
-//        String[] strPictures = new String[pictures.length];
-        ArrayList<String> list = new ArrayList<>();
-        
-        
+//        String[] strPictures = new String[pictures.length];     
         
 //        for(int i=0; i < pictures.length;i++)
 //                    System.out.println(pictures[i] + "\nasas");
@@ -246,7 +251,6 @@ try {
 //                }
                 
        // ArrayList<String> list = (ArrayList<String>) Arrays.asList(strPictures);
-        
         
         return pictures;
     }
@@ -310,6 +314,7 @@ try {
      * with the first picture in the selection.
      */
     public void nextPicture() {
+        
     }
 
     /**
@@ -346,5 +351,6 @@ try {
      * @requires @ensures the slide show stops.
      */
     public void stopSlideShow() {
+        
     }
 }
