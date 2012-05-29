@@ -156,9 +156,7 @@ try {
      * current collection's filename is file. The contents of the collection
      * corresponds to the contents of the file.
      */
-    public void importCollection(File file) throws FileNotFoundException {
-        FileReader fr = new FileReader(file);
-        
+    public void importCollection(File file) throws FileNotFoundException {        
     }
 
     /**
