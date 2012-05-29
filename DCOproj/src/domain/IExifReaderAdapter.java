@@ -20,8 +20,11 @@ public interface IExifReaderAdapter {
      * @return
      * @throws IOException
      */
-    public List<String> getExifTags(File jpegFile) throws IOException;
 
+    
+    public List<String> getExifTags(File jpegFile) throws IOException;
+    
+    
     /**
      * The method returns a Map with key equals to the set of attributes
      * previously selected during the creation of the EXIF reader. The values of the Map are
@@ -53,13 +56,13 @@ public interface IExifReaderAdapter {
      * @param attributes
      * 
      */
-    // public void setExifAttributes(List<String> attributes);
+   // public void setExifAttributes(List<String> attributes);
 
     
 
     /**
      * @return the list of valid Exif attributes.
      */
-    // public List<String> getValidExifAttributes();
+    //public List<String> getValidExifAttributes();
 
 }
