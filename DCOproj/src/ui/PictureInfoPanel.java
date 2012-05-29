@@ -87,14 +87,14 @@ public class PictureInfoPanel extends JPanel {
                                             theHeight));
                                     this.setMaximumSize(new Dimension(ThumbnailsPanel.getOuterWidth(),
                                             theHeight));
-        // ArrayList<String> tt = new ArrayList<String>();
+        ArrayList<String> tt = new ArrayList<String>();
     }
     
     protected void setInfo(String filename, List<String> list) {
         int index = filename.lastIndexOf(File.separatorChar);
         // System.out.println("in PictureInfoPanel.setInfo " + filename + " index " + index);
-        size.setText(((MainFrame) this.parent).getPictureWidth() + "x" + ((MainFrame) this.parent).getPictureHeight());
-        // size.setText(((MainFrame) parent).getPictureOrientation());
+        // size.setText(((MainFrame) this.parent).getPictureWidth() + "x" + ((MainFrame) this.parent).getPictureHeight());
+        size.setText(((MainFrame) parent).getPictureOrientation());
         fileValue.setText("");
         this.tags.removeAll();
         this.validate();
@@ -103,7 +103,11 @@ public class PictureInfoPanel extends JPanel {
         } else {
             fileValue.setText(filename.substring(index+1));
         }
-        this.tags.removeAll();        
+        this.tags.removeAll();
+        this.tags.add(new JLabel("one"));
+        this.tags.add(new JLabel("two"));
+        this.tags.add(new JLabel("three"));
+        this.tags.add(new JLabel("four"));
         for (int i = 0; i < list.size(); i++) {
             JLabel l = new JLabel(list.get(i));
             l.setForeground(Color.WHITE);
