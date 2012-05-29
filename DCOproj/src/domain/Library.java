@@ -249,8 +249,8 @@ try {
 //                }
                 
        // ArrayList<String> list = (ArrayList<String>) Arrays.asList(strPictures);
-        return new ArrayList<String>();
-        //return pictures;
+        //return new ArrayList<String>();
+        return pictures;
     }
 
     /**
