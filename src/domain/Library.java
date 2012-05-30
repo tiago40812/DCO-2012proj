@@ -90,15 +90,44 @@ public class Library extends Observable {
      * @return current picture's width.
      */
     public int getPictureWidth() {
-
-        return 1;
+    	try {
+    		
+	    	HashMap<String, String> exif = MyExifReaderAdapter.makeExifReaderAdapter().getExifAttributes(new File(currentPicture));
+	    	if (!exif.isEmpty()) {
+	    		if (exif.containsKey("Exif Image Width")) {
+			    	String[] pixels = exif.get("Exif Image Width").split(" ");
+			    	return Integer.parseInt(pixels[0]);
+	    		} else if (exif.containsKey("Image Width")) {
+		    		String[] pixels = exif.get("Image Width").split(" ");	
+			    	return Integer.parseInt(pixels[0]);
+		    	}
+	    	}
+    	} 
+    	catch (IOException e) {
+    		System.err.println("Nao encontra imagem");
+    	} 
+    	return 1;
     }
 
     /**
      * @return current picture's height
      */
     public int getPictureHeight() {
-        return 1;
+    	try {
+    	HashMap<String, String> exif = MyExifReaderAdapter.makeExifReaderAdapter().getExifAttributes(new File(currentPicture));
+    	if (!exif.isEmpty()) {
+    		if (exif.containsKey("Exif Image Height")) {
+		    	String[] pixels = exif.get("Exif Image Height").split(" ");	
+		    	return Integer.parseInt(pixels[0]);
+	    	} else if (exif.containsKey("Image Height")) {
+	    		String[] pixels = exif.get("Image Height").split(" ");	
+		    	return Integer.parseInt(pixels[0]);
+	    	}
+    	}
+    	} catch (IOException e) {
+    		System.err.println("Nao encontra imagem");
+    	} 
+    	return 1;
     }
 
     /**
@@ -106,9 +135,20 @@ public class Library extends Observable {
      * metadata.
      *
      * @return current picture's orientation
+     * @throws IOException 
      */
-    public String getPictureOrientation() {
-          return "( 90 CW)";
+    public String getPictureOrientation()  {
+    	try {
+    	HashMap<String, String> exif = MyExifReaderAdapter.makeExifReaderAdapter().getExifAttributes(new File(currentPicture));
+    	if (!exif.isEmpty()) {
+    		if (exif.containsKey("Orientation")) {	
+    			return exif.get("Orientation");
+    		}
+    	}
+    	} catch (IOException e) {
+    		System.err.println("Nao encontra imagem");
+    	}
+    	return "normal)";
     }
 
     public List<String> getPictureTags(String filename) {

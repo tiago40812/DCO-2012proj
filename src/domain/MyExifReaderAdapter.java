@@ -59,7 +59,7 @@ public class MyExifReaderAdapter implements IExifReaderAdapter {
                 for (com.drew.metadata.Tag tag : directory.getTags()) {
                     System.out.println("Name(" + tag.getTagName() + ") desc("
                             + tag.getDescription() + ")");
-                    if (validAttributes.contains(tag.getTagName()))
+                   // if (validAttributes.contains(tag.getTagName()))
                         attrValuePairs.put(tag.getTagName(), tag
                                 .getDescription());
                 }

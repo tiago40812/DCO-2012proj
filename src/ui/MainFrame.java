@@ -382,7 +382,7 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
     public void update(Observable o, Object arg) {
         switch(arg.toString())
         {
-            case "setPicture":fullSizePanel.setPicture(((domain.Library)o).currentPicture,200,200);break;
+            case "setPicture":fullSizePanel.setPicture(((domain.Library)o).currentPicture,((domain.Library)o).getPictureWidth(),((domain.Library)o).getPictureHeight());break;
             case "addPictures":thumbnailsPanel.setThumbnails(Main.lib.getSelectedPictures());break;
             case "nextPicture":fullSizePanel.setPicture(((domain.Library)o).currentPicture,200,200);break;
         }
