@@ -15,6 +15,7 @@ public class MyExifReaderAdapter implements IExifReaderAdapter {
     // private List<String>               selectedAttributes;
 
     private MyExifReaderAdapter() {
+    	
 
     }
 
