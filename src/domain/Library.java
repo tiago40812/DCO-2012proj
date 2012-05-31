@@ -37,12 +37,18 @@ public class Library extends Observable {
 	private Timer timer ;
  
 	public List<String> newtag = new ArrayList();
-	public HashMap tags = new HashMap();
+	public HashMap tagsPicture = new HashMap();
+	public HashMap<String, Double> allTags = new HashMap<String, Double>();
 	public String tagz = new String();
 	public ArrayList<String> collection = new ArrayList<String>();
+	public ArrayList<String> selection = new ArrayList<String>();
 	public String currentPicture;
 	private String nextPicture;
 	private String previousPicture;
+	private HashMap<String, TagStatus> tag_selected = new HashMap<String, TagStatus>();
+	private boolean firstTagClick = true;
+	private ArrayList<HashMap<String, TagStatus>> history_tags = new ArrayList<HashMap<String, TagStatus>>();
+	
 	/**
 	 * Creates a picture library from the the contents of filename.
 	 *
@@ -57,9 +63,11 @@ public class Library extends Observable {
 			while (sc.hasNext()) {
 				String s = sc.next();
 				collection.add(s);
+				selection.add(s);
 			}
 
 		} catch (FileNotFoundException e) {
+			System.err.println("Ficheiro ao encontrado");
 		}
 	}
 
@@ -75,6 +83,7 @@ public class Library extends Observable {
 	public void addPicturesToCollection(File[] filenames) {
 		for (int i = 0; i < filenames.length; i++) {
 			collection.add(filenames[i].toString());
+			selection.add(filenames[i].toString());
 			newtag = getPictureTags();
 		}
 		this.setChanged();
@@ -91,10 +100,10 @@ public class Library extends Observable {
 
 		this.tagz = tag;
 		newtag.add(tag);
-		if(tags.isEmpty())
-			tags.put(currentPicture.toString(), tag);
+		if(tagsPicture.isEmpty())
+			tagsPicture.put(currentPicture.toString(), tag);
 		else
-			tag = (String) tags.get(currentPicture.toString()).toString()+".7=";
+			tag = (String) tagsPicture.get(currentPicture.toString()).toString()+".7=";
 
 		this.setChanged();
 		this.notifyObservers("addTagToPicture");
@@ -106,15 +115,15 @@ public class Library extends Observable {
 	 * Removes the specified tag from the current picture.
 	 *
 	 * @param tag @requires @ensures if tag is not an EXIF tag, tag is not part
-	 * of current picture's tags.
+	 * of current picture's tagsPicture.
 	 *
 	 */
 	public void removeTagFromPicture(String tag) {
 		this.tagz = tag;
-		if(tags.isEmpty())
-			tags.put(currentPicture.toString(), tag);
+		if(tagsPicture.isEmpty())
+			tagsPicture.put(currentPicture.toString(), tag);
 		else
-			tag = (String) tags.get(currentPicture.toString()).toString()+".7=";
+			tag = (String) tagsPicture.get(currentPicture.toString()).toString()+".7=";
 
 		this.setChanged();
 		this.notifyObservers("addTagToPicture");
@@ -189,8 +198,6 @@ public class Library extends Observable {
 	public List<String> getPictureTags(String filename) throws ImageProcessingException, IOException {
 		List<String> teste = new ArrayList();
 		return MyExifReaderAdapter.makeExifReaderAdapter().getExifTags(new File(filename));
-
-		 
 	}
 
 	/**
@@ -269,6 +276,7 @@ public class Library extends Observable {
 	}
 
 	private void actualizeCurrentSelection() {
+		//selection
 	}
 
 	/**
@@ -277,6 +285,23 @@ public class Library extends Observable {
 	 * @param tagText
 	 */
 	public void tagClicked(String tagText) {
+		HashMap copyOfOriginal=new HashMap(tag_selected);
+		System.out.println("tagClicked = " + tagText);
+
+		history_tags.add(copyOfOriginal);
+		if (tag_selected.containsKey(tagText) ){
+			if (tag_selected.get(tagText).equals(TagStatus.SELECTED)){
+				tag_selected.put(tagText, TagStatus.NOTSELECTED);
+			} else {
+				tag_selected.put(tagText, TagStatus.SELECTED);
+			}
+		} else {
+			tag_selected.put(tagText, TagStatus.SELECTED);
+		}
+		getCurrentTagSelection();
+
+		this.setChanged();
+		this.notifyObservers("tagSelection");
 	}
 
 	/**
@@ -285,7 +310,7 @@ public class Library extends Observable {
 	 * @return size
 	 */
 	public int selectionSize() {
-		return 0;
+		return selection.size();
 	}
 
 	/**
@@ -294,7 +319,7 @@ public class Library extends Observable {
 	 * @return size
 	 */
 	public int size() {
-		return 0;
+		return collection.size();
 	}
 
 	/**
@@ -317,7 +342,25 @@ public class Library extends Observable {
 	 *
 	 */
 	public Map<String, Double> getTagsInSelection() {
-		return new HashMap<String, Double>();
+		try {		
+		for (int i = 0; i<selection.size(); i++) {
+			List<String> mytags;
+			mytags = MyExifReaderAdapter.makeExifReaderAdapter().getExifTags(new File(selection.get(i)));
+			for (int j = 0; j<mytags.size(); j++) {
+				if (allTags.containsKey(mytags.get(j))){
+					if ((double)allTags.get(mytags.get(j)).intValue()<1){
+						allTags.put(mytags.get(j), ((double) allTags.get(mytags.get(j)).intValue())+0.1);
+					}
+				}else{ 
+					allTags.put(mytags.get(j), (double) (0));
+				}
+			}
+		}
+		} catch (IOException e) {
+			System.err.println("ficheiro nao encontrado");
+		}
+		
+		return allTags;
 	}
 
 	/**
@@ -327,7 +370,8 @@ public class Library extends Observable {
 	 * @return list of pictures
 	 */
 	public List<String> getSelectedPictures() {
-		return collection;
+
+		return selection;
 	}
 
 	/**
@@ -342,6 +386,11 @@ public class Library extends Observable {
 	 * Replaces the current selection of tags by the previous selection of tags.
 	 */
 	public void recoverLastTagSelection() {
+		if (history_tags.size()>0)
+			tag_selected = history_tags.remove(history_tags.size()-1);
+		getCurrentTagSelection();
+		this.setChanged();
+		this.notifyObservers("tagSelection");
 	}
 
 	/**
@@ -351,7 +400,11 @@ public class Library extends Observable {
 	 * @return tag's status.
 	 */
 	public TagStatus getTagStatus(String text) {
-		return null;
+		//System.out.println("string inside getTagStatus = " + text);
+		if (tag_selected.containsKey(text)) {
+		return tag_selected.get(text);
+		}
+		return TagStatus.NOTSELECTED;
 	}
 
 	/**
@@ -361,6 +414,25 @@ public class Library extends Observable {
 	 * @return
 	 */
 	public String getCurrentTagSelection() {
+
+		try {
+			selection = new ArrayList<String>();
+			for (int i = 0; i<collection.size(); i++) {
+			List<String> mytags;
+			mytags = MyExifReaderAdapter.makeExifReaderAdapter().getExifTags(new File(collection.get(i)));
+			for (int j = 0; j<mytags.size(); j++) {
+				if (tag_selected.containsKey(mytags.get(j)) && tag_selected.get(mytags.get(j)).equals(TagStatus.SELECTED))
+					if (!selection.contains(collection.get(i))) {
+						selection.add(collection.get(i));
+					}
+			}
+			if (!tag_selected.containsValue(TagStatus.SELECTED)) {
+				selection = collection;
+			}
+		}
+		} catch (IOException e) {
+			System.err.println("ficheiro nao encontrado");
+		}
 		return null;
 	}
 
@@ -468,19 +540,19 @@ public class Library extends Observable {
 	private void changePicture(boolean flag)
 	{
 		try{
-			for(int i=0; i<collection.size();i++)
-				if(collection.get(i).equals(currentPicture))
+			for(int i=0; i<selection.size();i++)
+				if(selection.get(i).equals(currentPicture))
 					if(flag)
-						nextPicture = collection.get(i+1);
+						nextPicture = selection.get(i+1);
 					else 
-						previousPicture = collection.get(i-1);
+						previousPicture = selection.get(i-1);
 		}
 		catch(Exception e)
 		{
 			if(flag)
-				nextPicture = collection.get(0);
+				nextPicture = selection.get(0);
 			else
-				previousPicture = collection.get(collection.size()-1);
+				previousPicture = selection.get(selection.size()-1);
 		}
 	}
 }

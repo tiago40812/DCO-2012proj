@@ -404,12 +404,19 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-
 			break;
 		
 		case "addPictures":
 			thumbnailsPanel.setThumbnails(Main.lib.getSelectedPictures());
+			try {
+				this.pictureInfoPanel.setInfo(((domain.Library)o).currentPicture, ((domain.Library)o).getPictureTags(((domain.Library)o).currentPicture));
+			} catch (ImageProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 		
 		case "nextPicture":
@@ -430,6 +437,10 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
 			Tag.makeTag(((domain.Library)o).tagz, Double.parseDouble("99"));
 			this.pictureInfoPanel.setInfo("Mama a gaita", ((domain.Library)o).newtag);
 
+			break;
+		case "tagSelection":
+			thumbnailsPanel.setThumbnails(Main.lib.getSelectedPictures());
+			tagCloudPanel.initialize(Main.lib.getTagsInSelection());
 			break;
 
 		}

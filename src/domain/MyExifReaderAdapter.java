@@ -49,8 +49,8 @@ public class MyExifReaderAdapter implements IExifReaderAdapter {
 
     public HashMap<String, String> getExifAttributes(File jpegFile)
             throws IOException {
-        System.out.println("in MyExifReaderAdapter.getExifAttributes File "
-                + jpegFile);
+        //System.out.println("in MyExifReaderAdapter.getExifAttributes File "
+        //        + jpegFile);
         HashMap<String, String> attrValuePairs = new HashMap<String, String>();
         try {
             com.drew.metadata.Metadata metadata = com.drew.imaging.ImageMetadataReader
@@ -58,8 +58,8 @@ public class MyExifReaderAdapter implements IExifReaderAdapter {
             for (com.drew.metadata.Directory directory : metadata
                     .getDirectories()) {
                 for (com.drew.metadata.Tag tag : directory.getTags()) {
-                    System.out.println("Name(" + tag.getTagName() + ") desc("
-                            + tag.getDescription() + ")");
+                   // System.out.println("Name(" + tag.getTagName() + ") desc("
+                    //        + tag.getDescription() + ")");
                    // if (validAttributes.contains(tag.getTagName()))
                         attrValuePairs.put(tag.getTagName(), tag
                                 .getDescription());
