@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+
 import ui.MainFrame;
 import ui.MemoFile;
 
@@ -30,6 +31,8 @@ public class Library extends Observable {
     public String currentPicture;
     private String nextPicture;
     private String previousPicture;
+    public boolean slideShow = true;
+	private Timer timer ;
     /**
      * Creates a picture library from the the contents of filename.
      *
@@ -390,8 +393,32 @@ public class Library extends Observable {
      * @requires @ensures a slide show is running.
      */
     public void startSlideShow() {
+		changePicture(true);
+		setCurrentPicture(nextPicture);
+		
+		this.setChanged();
+		this.notifyObservers("startSlideShow");
+		
+		if (slideShow == true ) {
+	        timer = new Timer();
+			time();
+			slideShow = false;
+		}
+
 
     }
+    
+    private void time() {
+		int delay = 2000;   // delay for 5 sec.
+		int period = 2000;  // repeat every sec.
+
+		timer.scheduleAtFixedRate( new TimerTask() {
+	        public void run() {
+	        	startSlideShow();
+	        }
+	    }, delay, period);
+    }
+	
 
     /**
      * Stops the slide show.
@@ -399,9 +426,11 @@ public class Library extends Observable {
      * @requires @ensures the slide show stops.
      */
     public void stopSlideShow() {
+    	slideShow = true;
+    	timer.cancel();
     }
     
-    private void changePicture(boolean flag)
+    public void changePicture(boolean flag)
     {
         try{
         for(int i=0; i<collection.size();i++)

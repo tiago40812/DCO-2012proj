@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -382,9 +384,13 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
     public void update(Observable o, Object arg) {
         switch(arg.toString())
         {
+        	case "startSlideShow":
+        			fullSizePanel.setPicture(((domain.Library)o).currentPicture,((domain.Library)o).getPictureWidth(),((domain.Library)o).getPictureHeight());
+        			
+        		break;
             case "setPicture":fullSizePanel.setPicture(((domain.Library)o).currentPicture,((domain.Library)o).getPictureWidth(),((domain.Library)o).getPictureHeight());break;
             case "addPictures":thumbnailsPanel.setThumbnails(Main.lib.getSelectedPictures());break;
-            case "nextPicture":fullSizePanel.setPicture(((domain.Library)o).currentPicture,200,200);break;
+            case "nextPicture":fullSizePanel.setPicture(((domain.Library)o).currentPicture,((domain.Library)o).getPictureWidth(),((domain.Library)o).getPictureHeight());break;
         }
     }
 
