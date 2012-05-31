@@ -135,7 +135,6 @@ public class Library extends Observable {
 	 */
 	public int getPictureWidth() {
 		try {
-
 			HashMap<String, String> exif = MyExifReaderAdapter.makeExifReaderAdapter().getExifAttributes(new File(currentPicture));
 			if (!exif.isEmpty()) {
 				if (exif.containsKey("Exif Image Width")) {
@@ -370,7 +369,6 @@ public class Library extends Observable {
 	 * @return list of pictures
 	 */
 	public List<String> getSelectedPictures() {
-
 		return selection;
 	}
 

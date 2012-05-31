@@ -60,7 +60,7 @@ public class ThumbnailFactory extends MemoFile {
          */
         String tempdir = "";
         tempdir += fullSizeFile.getAbsolutePath()
-                .replace(System.getProperty("file.separator"), "!")
+                .replace(System.getProperty("file.separator"), ".")
                 .substring(1);
         return new File(tempdir);
     }
