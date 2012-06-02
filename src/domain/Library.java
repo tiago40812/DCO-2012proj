@@ -46,7 +46,6 @@ public class Library extends Observable {
 	private String nextPicture;
 	private String previousPicture;
 	private HashMap<String, TagStatus> tag_selected = new HashMap<String, TagStatus>();
-	private boolean firstTagClick = true;
 	private ArrayList<HashMap<String, TagStatus>> history_tags = new ArrayList<HashMap<String, TagStatus>>();
 	
 	/**
@@ -343,19 +342,20 @@ public class Library extends Observable {
 	 */
 	public Map<String, Double> getTagsInSelection() {
 		try {		
-		for (int i = 0; i<selection.size(); i++) {
-			List<String> mytags;
-			mytags = MyExifReaderAdapter.makeExifReaderAdapter().getExifTags(new File(selection.get(i)));
-			for (int j = 0; j<mytags.size(); j++) {
-				if (allTags.containsKey(mytags.get(j))){
-					if ((double)allTags.get(mytags.get(j)).intValue()<1){
-						allTags.put(mytags.get(j), ((double) allTags.get(mytags.get(j)).intValue())+0.1);
+			allTags = new HashMap<String, Double>();
+			for (int i = 0; i<collection.size(); i++) {
+				List<String> mytags;
+				mytags = MyExifReaderAdapter.makeExifReaderAdapter().getExifTags(new File(collection.get(i)));
+				for (int j = 0; j<mytags.size(); j++) {
+					if (allTags.containsKey(mytags.get(j))){
+						if ((double)allTags.get(mytags.get(j)).intValue()<1){
+							allTags.put(mytags.get(j), ((double) allTags.get(mytags.get(j)).intValue())+0.1);
+						}
+					}else{ 
+						allTags.put(mytags.get(j), (double) (0));
 					}
-				}else{ 
-					allTags.put(mytags.get(j), (double) (0));
 				}
 			}
-		}
 		} catch (IOException e) {
 			System.err.println("ficheiro nao encontrado");
 		}

@@ -42,7 +42,7 @@ public class Main {
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                File thumbnailsDir = new File("thumbnails");
+                File thumbnailsDir = new File("thumbnails/");
                 thumbnailsDir.mkdir();
                 // Na versão para o projecto os ficheiros são guardados na pasta do projecto.
                 // File theCollectionDir = 
