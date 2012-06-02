@@ -58,12 +58,7 @@ public class ThumbnailFactory extends MemoFile {
          * tempdir.endsWith("\\"))) tempdir = tempdir +
          * System.getProperty("file.separator");
          */
-//        String tempdir = "";
-//        tempdir += fullSizeFile.getAbsolutePath()
-//                .replace(System.getProperty("file.separator"), ".")
-//                .substring(1);
-
-        String tempdir = "thumbnails" + System.getProperty("file.separator");
+    	String tempdir = "thumbnails" + System.getProperty("file.separator");
         tempdir += fullSizeFile.getAbsolutePath()
                 .replace(System.getProperty("file.separator"), ".")
                 .replace(":", ".");

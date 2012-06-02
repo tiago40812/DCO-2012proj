@@ -343,7 +343,7 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
 			} else {
 				System.err.println("Save command cancelled by user.");
 			}
-		} else if (e.getSource() == loadAlbumItem) {
+		} else if (e.getSource() == loadCollectionItem) {
 			// ----- Loads a previously saved album.
 			fc.setCurrentDirectory(userDir);
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -392,8 +392,6 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
 			
 		break;
 		case "setPicture":
-			System.out.print("tas aqui");
-
 			fullSizePanel.setPicture(((domain.Library)o).currentPicture,((domain.Library)o).getPictureWidth(),((domain.Library)o).getPictureHeight());
 			try {
 				this.pictureInfoPanel.setInfo(((domain.Library)o).currentPicture, ((domain.Library)o).getPictureTags(((domain.Library)o).currentPicture));
@@ -433,7 +431,6 @@ public class MainFrame extends JFrame implements ActionListener, Observer {
 			break;
 		
 		case "addTagToPicture":
-			System.out.println("Tas aqui");
 			Tag.makeTag(((domain.Library)o).tagz, Double.parseDouble("99"));
 			this.pictureInfoPanel.setInfo("Mama a gaita", ((domain.Library)o).newtag);
 
